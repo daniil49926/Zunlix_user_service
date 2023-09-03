@@ -47,6 +47,7 @@ async def add_user(
     user = User(**new_user.model_dump())
     async with session.begin():
         session.add(user)
+        # TODO Обработать ошибки если бд бьет в отбойник
 
     return user
 
