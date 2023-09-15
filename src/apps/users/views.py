@@ -29,9 +29,7 @@ async def get_user(uid: int, session=Depends(get_db)) -> User:
 
 
 @v1.post("/users", response_model=UserOut)
-async def add_user(
-    user: UserIn, session: object = Depends(get_db)
-) -> User:
+async def add_user(user: UserIn, session: object = Depends(get_db)) -> User:
     hash_pass = get_password_hash(user.password)
     new_user = UserInDB(
         name=user.name,
@@ -55,4 +53,3 @@ async def add_user(
 @v1.get("/me", response_model=UserOut)
 async def get_me(current_user: User = Depends(get_current_active_user)):
     return current_user
-
