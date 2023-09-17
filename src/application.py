@@ -2,6 +2,7 @@ from fastapi import APIRouter, FastAPI
 
 from src.apps.routers import router
 from src.core.db import database
+from src.core.rabbitmq.rabbitmq import RabbitMQ
 
 event_router = APIRouter()
 
@@ -10,12 +11,14 @@ event_router = APIRouter()
 async def startup():
     async with database.engine.begin() as conn:
         await conn.run_sync(database.Base.metadata.create_all)
+    await RabbitMQ.connect()
 
 
 @event_router.on_event("shutdown")
 async def shutdown():
     await database.async_session().close()
     await database.engine.dispose()
+    await RabbitMQ.close()
 
 
 _app = None

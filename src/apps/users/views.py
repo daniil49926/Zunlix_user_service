@@ -9,6 +9,7 @@ from src.apps.users.models import User
 from src.apps.users.serializers import UserIn, UserInDB, UserOut
 from src.core.db.database import get_db
 from src.core.db.exception_models import Message403, Message404, Message500
+from src.core.rabbitmq.rabbitmq import RabbitMQ
 from src.core.security.auth_security import get_password_hash
 
 v1 = APIRouter()
@@ -40,12 +41,13 @@ async def add_user(user: UserIn, session: object = Depends(get_db)) -> User:
         hashed_password=hash_pass,
     )
 
-    # TODO Отправлять в отдельный сервис для подтверждение мыла
-
     user = User(**new_user.model_dump())
     async with session.begin():
         session.add(user)
         # TODO Обработать ошибки если бд бьет в отбойник
+
+    message_body = f"{user.name}&{user.surname}&{user.username}&{user.email}"
+    await RabbitMQ.send_message(queue_name="confirm-email", message_body=message_body)
 
     return user
 

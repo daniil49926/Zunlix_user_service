@@ -13,10 +13,14 @@ load_environ(_BASE_DIR)
 class __Settings(Singleton, BaseSettings):
     HOST: str = os.environ.get("APPLICATION_HOST")
     PORT: int = os.environ.get("APPLICATION_PORT")
-
     RELOAD: bool = True
+
     PG_DSN: str = os.environ.get("PG_DSN")
     MAX_ATTEMPTS_TO_CONN_TO_PG: int = 5
+
+    RABBITMQ_USER: str = os.environ.get("RABBITMQ_US_USER")
+    RABBITMQ_PASS: str = os.environ.get("RABBITMQ_US_PASSWORD")
+    RABBITMQ_HOST: str = os.environ.get("RABBITMQ_HOST")
 
     BASE_DIR: str = _BASE_DIR
 
