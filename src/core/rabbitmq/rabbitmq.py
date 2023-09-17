@@ -45,4 +45,3 @@ class RabbitMQ:
         if not cls.__instance:
             cls.__instance = super(RabbitMQ, cls).__new__(cls)
         return cls.__instance
-
